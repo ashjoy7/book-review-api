@@ -5,11 +5,11 @@ const doc = {
     title: 'Book Review API',
     description: 'API for managing book reviews',
   },
-  host: 'localhost:3000', // Change this to your deployed host when deploying
+  host: 'https://book-review-api-7zsi.onrender.com', 
   schemes: ['http'],
 };
 
 const outputFile = './swagger-output.json';
-const endpointsFiles = ['./routes/index.js', './routes/bookRoutes.js', './routes/reviewRoutes.js'];
+const endpointsFiles = ['./routes/index.js'];
 
 swaggerAutogen(outputFile, endpointsFiles, doc);
