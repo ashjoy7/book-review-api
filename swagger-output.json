@@ -8,7 +8,7 @@
   "host": "book-review-api-7zsi.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/": {
@@ -31,7 +31,7 @@
         }
       }
     },
-    "/contacts/books": {
+    "/books/books": {
       "get": {
         "description": "",
         "responses": {
@@ -55,7 +55,7 @@
         }
       }
     },
-    "/contacts/books/{id}": {
+    "/books/books/{id}": {
       "get": {
         "description": "",
         "parameters": [
