@@ -6,7 +6,7 @@ const doc = {
     description: 'API for managing book reviews',
   },
   host: 'book-review-api-7zsi.onrender.com', 
-  schemes: ['http'],
+  schemes: ['https'],
 };
 
 const outputFile = './swagger-output.json';
