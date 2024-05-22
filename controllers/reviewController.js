@@ -1,7 +1,5 @@
-const { MongoClient, ObjectId } = require('mongodb');
-
-// MongoDB connection URI
-const uri = process.env.MONGODB_URI;
+const mongodb = require('../db/connect');
+const ObjectId = require('mongodb').ObjectId;
 
 // Function to get the reviews collection
 async function getReviewsCollection() {

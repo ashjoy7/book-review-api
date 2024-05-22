@@ -9,6 +9,16 @@ const app = express();
 const debug = require('debug');
 debug.enable('mongodb,tls');
 
+mongodb.initDb((err, mongodb) => {
+  if (err) {
+    console.log(err);
+  } else {
+    app.listen(port);
+    console.log(`Connected to DB and listening on ${port}`);
+  }
+});
+
+
 app
   .use(bodyParser.json())
   .use((req, res, next) => {
@@ -33,11 +43,3 @@ app.options('*', (req, res) => {
     res.status(200).send();
 });
 
-mongodb.initDb((err, mongodb) => {
-  if (err) {
-    console.log(err);
-  } else {
-    app.listen(port);
-    console.log(`Connected to DB and listening on ${port}`);
-  }
-});
