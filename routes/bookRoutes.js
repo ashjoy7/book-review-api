@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bookController = require('../controllers/bookController');
-const authMiddleware = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -22,7 +21,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *         description: Internal Server Error
  */
 
-router.get('/books', authMiddleware, bookController.getAllBooks);
+router.get('/books', bookController.getAllBooks);
 
 /**
  * @swagger
@@ -46,6 +45,6 @@ router.get('/books', authMiddleware, bookController.getAllBooks);
  *       400:
  *         description: Bad Request
  */
-router.post('/books', authMiddleware, bookController.createBook);
+router.post('/books', bookController.createBook);
 
 module.exports = router;
