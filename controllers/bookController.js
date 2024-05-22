@@ -40,3 +40,48 @@ exports.getAllBooks = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+// Function to get a single book by ID
+exports.getBookById = async (req, res) => {
+  try {
+    const booksCollection = await getBooksCollection();
+    const book = await booksCollection.findOne({ _id: ObjectId(req.params.id) });
+    if (!book) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+    res.json(book);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Function to update a book
+exports.updateBook = async (req, res) => {
+  try {
+    const booksCollection = await getBooksCollection();
+    const result = await booksCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: req.body });
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+    res.json({ message: 'Book updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Function to delete a book
+exports.deleteBook = async (req, res) => {
+  try {
+    const booksCollection = await getBooksCollection();
+    const result = await booksCollection.deleteOne({ _id: ObjectId(req.params.id) });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+    res.json({ message: 'Book deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
