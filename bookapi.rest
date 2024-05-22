@@ -1,0 +1,7 @@
+#LOCAL
+
+##Get all books
+###
+GET http://localhost:3000/api/books
+
+###
