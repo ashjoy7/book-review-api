@@ -20,7 +20,7 @@ GET http://localhost:3000/books HTTP/1.1
 
 ## Get a book by ID
 ###
-GET http://localhost:3000/books/{bookId} HTTP/1.1
+GET http://localhost:3000/books/664d393bf5b09653b62c82c5 HTTP/1.1
 
 ## Update a book
 ###
