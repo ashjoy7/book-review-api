@@ -27,8 +27,6 @@ app.use('/', swaggerRoutes);
 
 // Define your routes here
 app.use('/', require('./routes'));
-app.use('/', require('./routes/bookRoutes'));
-app.use('/', require('./routes/bookRoutes'));
 
 // Handle preflight OPTIONS requests for CORS
 app.options('*', (req, res) => {
