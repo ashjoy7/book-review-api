@@ -1,7 +1,82 @@
 #LOCAL
-
-##Get all books
+#Create a new book
 ###
-GET http://localhost:3000/api/books
+POST http://localhost:3000/api/books HTTP/1.1
+Content-Type: application/json
 
+{
+"title": "The Great Gatsby",
+"author": "F. Scott Fitzgerald",
+"description": "The story of the fabulously wealthy Jay Gatsby and his love for the beautiful Daisy Buchanan.",
+"publishedYear": 1925,
+"genre": "Classic",
+"rating": 4.5
+}
+
+
+#Get all books
 ###
+GET http://localhost:3000/api/books HTTP/1.1
+
+#Get a book by ID
+###
+GET http://localhost:3000/api/books/{bookId} HTTP/1.1
+
+#Update a book
+###
+PUT http://localhost:3000/api/books/{bookId} HTTP/1.1
+Content-Type: application/json
+
+{
+"title": "The Great Gatsby",
+"author": "F. Scott Fitzgerald",
+"description": "This book sucks, don't read it.",
+"publishedYear": 1925,
+"genre": "Classic",
+"rating": 4.7
+}
+
+#Delete a book
+###
+DELETE http://localhost:3000/api/books/{bookId} HTTP/1.1
+
+#PRODUCTION
+#Create a new book
+###
+POST https://book-review-api-7zsi.onrender.com/api/books HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "1984",
+  "author": "George Orwell",
+  "description": "A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism.",
+  "publishedYear": 1949,
+  "genre": "Science Fiction",
+  "rating": 4.6
+}
+
+#Get all books
+###
+GET https://book-review-api-7zsi.onrender.com/api/books HTTP/1.1
+
+#Get a book by ID
+###
+GET https://book-review-api-7zsi.onrender.com/api/books/{bookId}  HTTP/1.1
+
+#Update a book
+###
+PUT https://book-review-api-7zsi.onrender.com/api/books/{bookId} 
+Content-Type: application/json
+
+{
+  "title": "1984",
+  "author": "George Orwell",
+  "description": "BIG BROTHER IS WATCHING!!!",
+  "publishedYear": 1949,
+  "genre": "Science Fiction",
+  "rating": 4.6
+}
+
+#Delete a book
+###
+DELETE https://book-review-api-7zsi.onrender.com/api/books/{bookId} 
