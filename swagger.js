@@ -5,7 +5,7 @@ const doc = {
     title: 'Book Review API',
     description: 'API for managing book reviews',
   },
-  host: 'https://book-review-api-7zsi.onrender.com', 
+  host: 'book-review-api-7zsi.onrender.com', 
   schemes: ['http'],
 };
 
