@@ -1,54 +1,45 @@
-// app.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongodb = require('./db/connect.js');
-const swaggerUi = require('swagger-ui-express');
-const swaggerFile = require('./swagger-output.json');
+const mongodb = require('./db/connect');
 const swaggerRoutes = require('./routes/swagger'); 
 
-const app = express();
 const port = process.env.PORT || 3000;
+const app = express();
 
-// Parse JSON bodies
-app.use(bodyParser.json());
+const debug = require('debug');
+debug.enable('mongodb,tls');
 
-// CORS headers middleware
-app.use((req, res, next) => {
+app
+  .use(bodyParser.json())
+  .use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
         'Access-Control-Allow-Headers',
         'Origin, X-Requested-With, Content-Type, Accept, Z-Key'
     );
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods','GET, POST, PATCH, PUT, DELETE, OPTIONS');
     next(); // Call next() after setting headers
+  });
+
+// Serve Swagger UI
+app.use('/', swaggerRoutes);
+
+// Define your routes here
+app.use('/', require('./routes'));
+app.use('/', require('./routes/bookRoutes'));
+app.use('/', require('./routes/bookRoutes'));
+
+// Handle preflight OPTIONS requests for CORS
+app.options('*', (req, res) => {
+    res.status(200).send();
 });
 
-// Define routes
-const indexRoutes = require('./routes/index');
-const bookRoutes = require('./routes/bookRoutes');
-app.use('/', indexRoutes);
-app.use('/api', bookRoutes);
-
-// Serve Swagger docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
-
-// Connect to MongoDB
-mongodb.initDb((err) => {
-    if (err) {
-        console.error('MongoDB connection error:', err);
-        // You might want to add more error handling here, such as retry logic or exiting the application
-    } else {
-        // Start the Express server after MongoDB connection
-        app.listen(port, () => console.log(`Server running on port ${port}`));
-    }
+mongodb.initDb((err, mongodb) => {
+  if (err) {
+    console.log(err);
+  } else {
+    app.listen(port);
+    console.log(`Connected to DB and listening on ${port}`);
+  }
 });
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
-module.exports = app;
