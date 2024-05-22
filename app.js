@@ -9,11 +9,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongodb.initDb(process.env.MONGO_URI, (err) => {
+mongodb.initDb((err) => {
   if (err) {
     console.error('MongoDB connection error:', err);
   } else {
     console.log('MongoDB connected');
+    
+    // Start the Express server after MongoDB connection
+    app.listen(port, () => console.log(`Server running on port ${port}`));
   }
 });
 
@@ -28,5 +31,3 @@ app.use('/api', bookRoutes);
 
 // Serve Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
-
-app.listen(port, () => console.log(`Server running on port ${port}`));
