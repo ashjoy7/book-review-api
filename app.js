@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongodb.connect(process.env.MONGO_URI, (err) => {
+mongodb.initDb(process.env.MONGO_URI, (err) => {
   if (err) {
     console.error('MongoDB connection error:', err);
   } else {
