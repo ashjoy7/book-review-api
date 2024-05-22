@@ -1,7 +1,6 @@
 const mongodb = require('../db/connect');
 const ObjectId = require('mongodb').ObjectId;
 
-
 const getAllBooks = async (req, res, next) => {
   const result = await mongodb.getDb().db().collection('books').find();
   result.toArray().then((lists) => {
