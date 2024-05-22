@@ -1,7 +1,7 @@
 const { MongoClient, ObjectId } = require('mongodb');
 
 // MongoDB connection URI
-const uri = process.env.MONGO_URI;
+const uri = process.env.MONGODB_URI;
 
 // Function to get the MongoDB client
 async function getClient() {
