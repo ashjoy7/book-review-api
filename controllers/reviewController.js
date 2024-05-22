@@ -1,5 +1,5 @@
 const mongodb = require('../db/connect');
-const ObjectId = require('mongodb').ObjectId;
+const { ObjectId } = require('mongodb');
 
 const getAllReviews = async (req, res, next) => {
   const result = await mongodb.getDb().db().collection('reviews').find();
@@ -11,11 +11,7 @@ const getAllReviews = async (req, res, next) => {
 
 const getReviewById = async (req, res, next) => {
   const reviewId = new ObjectId(req.params.id);
-  const result = await mongodb
-    .getDb()
-    .db()
-    .collection('reviews')
-    .find({ _id: reviewId });
+  const result = await mongodb.getDb().db().collection('reviews').find({ _id: reviewId });
   result.toArray().then((lists) => {
     res.setHeader('Content-Type', 'application/json');
     res.status(200).json(lists[0]);
@@ -27,7 +23,7 @@ const createReview = async (req, res) => {
     reviewer: req.body.reviewer,
     content: req.body.content,
     rating: req.body.rating,
-    bookId: req.body.bookId // Assuming each review is associated with a book
+    bookId: new ObjectId(req.params.id) // Ensure each review is associated with a book
   };
   const response = await mongodb.getDb().db().collection('reviews').insertOne(review);
   if (response.acknowledged) {
@@ -39,19 +35,13 @@ const createReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
   const reviewId = new ObjectId(req.params.id);
-  // be aware of updateOne if you only want to update specific fields
   const review = {
     reviewer: req.body.reviewer,
     content: req.body.content,
     rating: req.body.rating,
-    bookId: req.body.bookId // Assuming each review is associated with a book
+    bookId: new ObjectId(req.body.bookId)
   };
-  const response = await mongodb
-    .getDb()
-    .db()
-    .collection('reviews')
-    .replaceOne({ _id: reviewId }, review);
-  console.log(response);
+  const response = await mongodb.getDb().db().collection('reviews').replaceOne({ _id: reviewId }, review);
   if (response.modifiedCount > 0) {
     res.status(204).send();
   } else {
@@ -61,8 +51,7 @@ const updateReview = async (req, res) => {
 
 const deleteReview = async (req, res) => {
   const reviewId = new ObjectId(req.params.id);
-  const response = await mongodb.getDb().db().collection('reviews').remove({ _id: reviewId }, true);
-  console.log(response);
+  const response = await mongodb.getDb().db().collection('reviews').deleteOne({ _id: reviewId });
   if (response.deletedCount > 0) {
     res.status(204).send();
   } else {
