@@ -1,6 +1,8 @@
+// app.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongodb = require('./db/connect');
+const mongodb = require('./db/connect.js');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
 const swaggerRoutes = require('./routes/swagger'); 
@@ -38,7 +40,6 @@ mongodb.initDb((err) => {
         console.error('MongoDB connection error:', err);
         // You might want to add more error handling here, such as retry logic or exiting the application
     } else {
-        console.log('MongoDB connected');
         // Start the Express server after MongoDB connection
         app.listen(port, () => console.log(`Server running on port ${port}`));
     }
