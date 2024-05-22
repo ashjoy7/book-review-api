@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const mongodb = require('./db/connect');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
 
@@ -9,18 +9,20 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+mongodb.connect(process.env.MONGO_URI, (err) => {
+  if (err) {
+    console.error('MongoDB connection error:', err);
+  } else {
+    console.log('MongoDB connected');
+  }
+});
 
-// Middleware
+// Parse JSON bodies
 app.use(bodyParser.json());
 
-// Import routes
+// Define routes
 const indexRoutes = require('./routes/index');
 const bookRoutes = require('./routes/bookRoutes');
-
-// Use routes
 app.use('/', indexRoutes);
 app.use('/api', bookRoutes);
 
