@@ -1,85 +1,84 @@
 const mongodb = require('../db/connect');
 const ObjectId = require('mongodb').ObjectId;
 
-// Function to get the MongoDB client
-async function getClient() {
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-  await client.connect();
-  return client;
-}
 
-// Function to get the books collection
-async function getBooksCollection() {
-  const client = await getClient();
-  return client.db().collection('books');
-}
+const getAllBooks = async (req, res, next) => {
+  const result = await mongodb.getDb().db().collection('books').find();
+  result.toArray().then((lists) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(lists);
+  });
+};
 
-// Function to create a new book
-exports.createBook = async (req, res) => {
-  try {
-    const booksCollection = await getBooksCollection();
-    const result = await booksCollection.insertOne(req.body);
-    const createdBook = result.ops[0];
-    res.status(201).json(createdBook);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+const getBookById = async (req, res, next) => {
+  const bookId = new ObjectId(req.params.id);
+  const result = await mongodb
+    .getDb()
+    .db()
+    .collection('books')
+    .find({ _id: bookId });
+  result.toArray().then((lists) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(lists[0]);
+  });
+};
+
+const createBook = async (req, res) => {
+  const book = {
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description,
+    publishedYear: req.body.publishedYear,
+    genre: req.body.genre,
+    rating: req.body.rating
+  };
+  const response = await mongodb.getDb().db().collection('books').insertOne(book);
+  if (response.acknowledged) {
+    res.status(201).json(response);
+  } else {
+    res.status(500).json(response.error || 'Some error occurred while creating the book.');
   }
 };
 
-// Function to get all books
-exports.getAllBooks = async (req, res) => {
-  try {
-    const booksCollection = await getBooksCollection();
-    const books = await booksCollection.find({}).toArray();
-    res.json(books);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+const updateBook = async (req, res) => {
+  const bookId = new ObjectId(req.params.id);
+  // be aware of updateOne if you only want to update specific fields
+  const book = {
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description,
+    publishedYear: req.body.publishedYear,
+    genre: req.body.genre,
+    rating: req.body.rating
+  };
+  const response = await mongodb
+    .getDb()
+    .db()
+    .collection('books')
+    .replaceOne({ _id: bookId }, book);
+  console.log(response);
+  if (response.modifiedCount > 0) {
+    res.status(204).send();
+  } else {
+    res.status(500).json(response.error || 'Some error occurred while updating the book.');
   }
 };
 
-// Function to get a single book by ID
-exports.getBookById = async (req, res) => {
-  try {
-    const booksCollection = await getBooksCollection();
-    const book = await booksCollection.findOne({ _id: ObjectId(req.params.id) });
-    if (!book) {
-      return res.status(404).json({ error: 'Book not found' });
-    }
-    res.json(book);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+const deleteBook = async (req, res) => {
+  const bookId = new ObjectId(req.params.id);
+  const response = await mongodb.getDb().db().collection('books').remove({ _id: bookId }, true);
+  console.log(response);
+  if (response.deletedCount > 0) {
+    res.status(204).send();
+  } else {
+    res.status(500).json(response.error || 'Some error occurred while deleting the book.');
   }
 };
 
-// Function to update a book
-exports.updateBook = async (req, res) => {
-  try {
-    const booksCollection = await getBooksCollection();
-    const result = await booksCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: req.body });
-    if (result.modifiedCount === 0) {
-      return res.status(404).json({ error: 'Book not found' });
-    }
-    res.json({ message: 'Book updated successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-// Function to delete a book
-exports.deleteBook = async (req, res) => {
-  try {
-    const booksCollection = await getBooksCollection();
-    const result = await booksCollection.deleteOne({ _id: ObjectId(req.params.id) });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: 'Book not found' });
-    }
-    res.json({ message: 'Book deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+module.exports = {
+  getAllBooks,
+  getBookById,
+  createBook,
+  updateBook,
+  deleteBook
 };
