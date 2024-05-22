@@ -1,22 +1,35 @@
-const Review = require('../models/review');
+const { MongoClient, ObjectId } = require('mongodb');
 
-// Functions to handle CRUD operations
-exports.getAllReviews = async (req, res) => {
-  // Logic to get all reviews from the database
-};
+// MongoDB connection URI
+const uri = process.env.MONGO_URI;
 
+// Function to get the reviews collection
+async function getReviewsCollection() {
+  const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  return client.db().collection('reviews');
+}
+
+// Function to create a new review
 exports.createReview = async (req, res) => {
-  // Logic to create a new review
+  try {
+    const reviewsCollection = await getReviewsCollection();
+    const result = await reviewsCollection.insertOne(req.body);
+    const createdReview = result.ops[0];
+    res.status(201).json(createdReview);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-exports.getReviewById = async (req, res) => {
-  // Logic to get a review by its ID
-};
-
-exports.updateReview = async (req, res) => {
-  // Logic to update a review
-};
-
-exports.deleteReview = async (req, res) => {
-  // Logic to delete a review
+// Function to get all reviews
+exports.getAllReviews = async (req, res) => {
+  try {
+    const reviewsCollection = await getReviewsCollection();
+    const reviews = await reviewsCollection.find({}).toArray();
+    res.json(reviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
