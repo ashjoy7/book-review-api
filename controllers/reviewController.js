@@ -15,7 +15,7 @@ const getAllReviews = async (req, res, next) => {
 
 const createReview = async (req, res) => {
   const { reviewer, content, rating } = req.body;
-  const { bookId } = req.params; // Extract bookId from URL parameters
+  const { bookId } = req.params; // Extract bookID from URL parameters
 
   if (!reviewer || !content || !rating) {
     return res.status(400).json({ error: 'Reviewer, content, and rating are required fields' });
@@ -32,7 +32,7 @@ const createReview = async (req, res) => {
       reviewer: req.body.reviewer,
       content: req.body.content,
       rating: req.body.rating,
-      bookId: bookID
+      bookId: bookId
     };
 
     const response = await mongodb.getDb().db().collection('reviews').insertOne(review);
