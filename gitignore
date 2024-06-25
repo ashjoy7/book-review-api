@@ -1,4 +1,4 @@
 # .gitignore
 node_modules
+.env_folder
 .env
-.env1
